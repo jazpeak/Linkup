@@ -1,0 +1,7 @@
+# Ignore all .env files recursively
+*.env
+
+/.idea/
+
+/frontend/node_modules/
+/backend/node_modules/
