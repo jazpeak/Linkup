@@ -3,20 +3,34 @@ import FriendRequest from "../models/friendRequest.js";
 
 export async function getRecommendedUsers(req, res){
     try {
-        const currentUserId=req.user.id;
-        const currentUser= req.user;
+        const currentUserId = req.user.id;
+        const currentUser = req.user;
 
-        const recommendedUsers = await User.find({
-            $and:[
-                {_id: {$ne:currentUserId}}, //exclude current user
-                {_id:{$nin:currentUser.friends}}, // exclude current user's friends
-                {isOnboarded: true},
+        let recommendedUsers = await User.find({
+            $and: [
+                { _id: { $ne: currentUserId } }, // exclude current user
+                { _id: { $nin: currentUser.friends } }, // exclude current user's friends
+                { isOnboarded: true },
             ]
-        })
-        res.status(200).json(recommendedUsers);
+        });
+
+        recommendedUsers.sort((a, b) => {
+            let scoreA = 0;
+            let scoreB = 0;
+
+            if (a.nativeLanguage === currentUser.learningLanguage) scoreA += 2;
+            if (a.learningLanguage === currentUser.nativeLanguage) scoreA += 2;
+
+            if (b.nativeLanguage === currentUser.learningLanguage) scoreB += 2;
+            if (b.learningLanguage === currentUser.nativeLanguage) scoreB += 2;
+
+            return scoreB - scoreA;
+        });
+
+        res.status(200).json(recommendedUsers.slice(0, 20));
 
     } catch(error){
-        console.error("Error in getRecommendedUsers",error.message);
+        console.error("Error in getRecommendedUsers", error.message);
         res.status(500).json({message: "Internal Server Error"})
     }
 }
