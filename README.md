@@ -1,3 +1,7 @@
+#Credits
+
+This project was worked on by **Jazl Anwar Only**.
+
 # Linkup
 
 A minimalist, full-stack MERN web application designed for language exchange. Connect with language partners worldwide through a smart recommendation engine, real-time messaging, and high-quality WebRTC video calling.
