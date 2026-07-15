@@ -1,6 +1,10 @@
-## Credits
+## Author
 
-This project was worked on by **Jazl Anwar Only**.
+**Jazl Anwar Mundam Valappil** Only
+- GitHub: [@jazpeak](https://github.com/jazpeak)
+- LinkedIn: [Jazl Anwar](https://www.linkedin.com/in/jazlanwar/)
+- Email: jazl24283@iiitd.ac.in
+- Number: +91 8129441888
 
 # Linkup
 
