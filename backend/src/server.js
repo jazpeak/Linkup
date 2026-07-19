@@ -22,7 +22,7 @@ app.use("/api/auth",authRoutes);
 app.use("/api/users",userRoutes);
 app.use("/api/chat",chatRoutes);
 
-app.listen(5001,()=>{
+app.listen(PORT || 5001,()=>{
     console.log(`Server running on port ${PORT}`);
     connectDB();
 });
