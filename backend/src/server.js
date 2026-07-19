@@ -11,7 +11,10 @@ const app= express();
 const PORT=process.env.PORT;
 
 app.use(cors({
-    origin:["http://localhost:5173", "http://localhost:5174"],
+    origin: (origin, callback) => {
+        // Allow all incoming origins for the deployed Vercel frontend
+        callback(null, origin || true);
+    },
     credentials: true, // allow frontend to send cookies
 })
 );
