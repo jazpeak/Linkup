@@ -1,0 +1,65 @@
+name: Linkup CI/CD
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        
+    - name: Install Backend Dependencies
+      working-directory: ./backend
+      run: npm ci
+      
+    - name: Install Frontend Dependencies
+      working-directory: ./frontend
+      run: npm ci
+      
+    - name: Build Frontend
+      working-directory: ./frontend
+      run: npm run build
+      
+  deploy-to-gcp:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Google Auth
+      id: auth
+      uses: 'google-github-actions/auth@v2'
+      with:
+        credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
+
+    - name: Set up Cloud SDK
+      uses: google-github-actions/setup-gcloud@v2
+
+    - name: Configure Docker for Artifact Registry
+      run: gcloud auth configure-docker us-central1-docker.pkg.dev
+
+    - name: Build and Push Docker Image
+      working-directory: ./backend
+      run: |
+        docker build -t us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/linkup-repo/linkup-backend:${{ github.sha }} .
+        docker push us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/linkup-repo/linkup-backend:${{ github.sha }}
+        
+    - name: Deploy to Cloud Run
+      run: |
+        gcloud run deploy linkup-backend \
+          --image us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/linkup-repo/linkup-backend:${{ github.sha }} \
+          --region us-central1 \
+          --allow-unauthenticated \
+          --set-env-vars="PORT=5001,MONGO_URL=${{ secrets.MONGO_URL }},STREAM_API_KEY=${{ secrets.STREAM_API_KEY }},STREAM_API_SECRET=${{ secrets.STREAM_API_SECRET }},JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}"
