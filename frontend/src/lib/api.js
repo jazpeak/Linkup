@@ -7,7 +7,7 @@ export const signup = async (signupData) =>{
 }
 
 export const getAuthUser = async () =>{
-    const res= await axiosInstance("http://localhost:5001/api/auth/me");
+    const res= await axiosInstance.get("/auth/me");
     return res.data;
 }
 
