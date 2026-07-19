@@ -8,6 +8,9 @@
 
 # Linkup
 
+🚀 **Live Demo:** [https://linkup-kcmwgs1s3-special5.vercel.app](https://linkup-kcmwgs1s3-special5.vercel.app)
+*(Frontend deployed on Vercel, Backend containerized on Google Cloud Run, Database on MongoDB Atlas)*
+
 A minimalist, full-stack MERN web application designed for language exchange. Connect with language partners worldwide through a smart recommendation engine, real-time messaging, and high-quality WebRTC video calling.
 
 ## Features
